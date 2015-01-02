@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Scala | Mahasooq AT]]></title>
+  <link href="http://mahasooq.com/blog/categories/scala/atom.xml" rel="self"/>
+  <link href="http://mahasooq.com/"/>
+  <updated>2015-01-02T17:10:25+05:30</updated>
+  <id>http://mahasooq.com/</id>
+  <author>
+    <name><![CDATA[Mahasooq]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[A Quick Guide for SBT 0.10]]></title>
+    <link href="http://mahasooq.com/blog/2011/08/02/a-quick-guide-for-sbt-0-dot-10/"/>
+    <updated>2011-08-02T16:38:30+05:30</updated>
+    <id>http://mahasooq.com/blog/2011/08/02/a-quick-guide-for-sbt-0-dot-10</id>
+    <content type="html"><![CDATA[<!--More-->
+
+
+<p><a href="https://github.com/harrah/xsbt">SBT</a> (Simple Bulid Tool ) is a build tool for Scala Projects written in Scala by <a href="https://github.com/harrah">Mark Harrah</a>.  The new sbt version 0.10.x has got various changes from the 0.7.x.</p>
+
+<h4><strong>Initial Setup</strong></h4>
+
+<p><a href="http://typesafe.artifactoryonline.com/typesafe/ivy-releases/org.scala-tools.sbt/sbt-launch/0.10.0/sbt-launch.jar">Download </a>the sbt jar file. Copy it in ~/usr/bin directory. Create a file called sbt and put the following script into it; place it in the same directory.</p>
+
+<pre><code>#!/bin/bash
+java -Xmx512M -jar `dirname $0`/sbt-launch.jar "$@"
+</code></pre>
+
+<p>Then do</p>
+
+<pre><code>$ chmod u+x ~/usr/bin/sbt
+</code></pre>
+
+<p>Now you can execute the sbt command from anywhere in the system.</p>
+
+<h4><strong>Project Creation</strong></h4>
+
+<p>1.)  First you  is  create a <em>build.sbt </em>in the project root,  which is the build configuration file. A sample file is as shown below.
+“</p>
+
+<pre><code>name := "Project"
+version := "0.1.0"
+scalaVersion := "2.9.0-1"
+libraryDependencies += "junit" % "junit" % "4.8" % "test"
+</code></pre>
+
+<p>2.)  Now execute the <strong><em>sbt </em></strong> command ; the required dependencies will be downloaded . You can now start coding your project and  compile/execute using <strong><em>compile/run </em></strong>commands. Test the project using <em><strong>test</strong></em></p>
+
+<h4><strong>Make Yours an Eclipse Project</strong></h4>
+
+<p>1.)  Create a folder called .sbt in your home directory, then crete sub directories as</p>
+
+<pre><code>/home/user/
+|______ .sbt
+|_____projects
+|     |_______plugins
+|_____..
+</code></pre>
+
+<p>2.)  Now put a <em><strong>bulid.sbt</strong></em> file in the plugins folder, and the contents are as below.
+“</p>
+
+<pre><code>resolvers += {
+  val typesafeRepoUrl = new java.net.URL("http://repo.typesafe.com/typesafe/releases")
+  val pattern = Patterns(false, "[organisation]/[module]/[sbtversion]/[revision]/[type]s/[module](-[classifier])-[revision].[ext]")
+  Resolver.url("Typesafe Repository", typesafeRepoUrl)(pattern)
+}
+
+libraryDependencies &lt;&lt;= (libraryDependencies, sbtVersion) { (deps, version) =&gt;
+  deps :+ ("com.typesafe.sbteclipse" %% "sbteclipse" % "1.1" extra("sbtversion" -&gt; version))
+}
+</code></pre>
+
+<p>It actually adds an sbt eclipse plugin dependency.</p>
+
+<p>3.) You can use the <em><strong>eclipse</strong></em> command from your project to make it an eclipse project, and then you can simply import the project to eclipse.</p>
+
+<p>use <em><strong>eclipse create-src </strong></em> for creating the eclipse folder structure.</p>
+
+<h4></h4>
+
+<h4><strong>Liftweb and SBT .10</strong></h4>
+
+<p>Add a bulid.sbt in the project root, and another build file in the <em>project/plugins</em> directory</p>
+
+<p>A sample bulid file to add in the project root :</p>
+
+<pre><code>name := "Lift-SBT-0.10-template"
+organization := "org.mcoder"
+version := "0.1-SNAPSHOT"
+scalaVersion := "2.9.0-1"
+seq(WebPlugin.webSettings :_*)
+jettyScanDirs := Nil
+libraryDependencies ++= Seq(
+"net.liftweb" %% "lift-webkit" % "2.4-M1" % "compile" withSources(),
+"ch.qos.logback" % "logback-classic" % "0.9.26"
+)
+
+libraryDependencies ++= Seq(
+"org.scalaquery" % "scalaquery_2.9.0" % "0.9.4" withSources(),
+"com.h2database" % "h2" % "1.3.155"
+)
+libraryDependencies ++= Seq(
+"org.eclipse.jetty" % "jetty-webapp" % "7.3.0.v20110203" % "jetty",
+"org.specs2" %% "specs2" % "1.4" % "test" withSources()
+)
+</code></pre>
+
+<p>A sample build file to add in the project/plugins folder :</p>
+
+<pre><code>resolvers += "Web plugin repo" at "http://siasia.github.com/maven2"
+libraryDependencies &lt;+= sbtVersion("com.github.siasia" %% "xsbt-web-plugin" % _)
+</code></pre>
+
+<p>You can find a lift-blank template from my git repository : <a href="http://github.com/mahasooq/Lift-SBT-0.10-template.git">http://github.com/mahasooq/Lift-SBT-0.10-template.git</a></p>
+]]></content>
+  </entry>
+  
+</feed>
